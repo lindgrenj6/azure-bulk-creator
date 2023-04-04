@@ -1,32 +1,30 @@
-# Cost Management Bulk-Uploader
+# Azure RHEL Management Bulk-Uploader
 
 **Requirements**:
 - curl
 - jq
 
-This is a bulk-upload tool for importing many AWS accounts into console.redhat.com's hybrid cost management application.
+This is a bulk-upload tool for importing many Azure accounts into console.redhat.com's RHEL Management Application.
 
 To run this one needs a couple things:
 1. Credentials to console.redhat.com with the `Sources Administrator` role in RBAC
-2. 1..n AWS Accounts one wants to monitor with cost management
+2. 1..n Azure Accounts one wants to set up with RHEL Management
 
 ### File(s) needed
 To manage these many sources in console.redhat.com the scripts just read from a csv file, by default it looks in the current directory for `accounts.csv`. The format of this document is very simple and looks like this:
 
-| Name | AccessKey | Secret |
-| -------- | -------- | ------ |
-| Test1 | AK2522235 | S3CRet |
+| Name | Tenant |
+| -------- | ------ |
+| Test1 | 1234-1234 |
 
-The access key + secret need to be:
-- (easy way) be an admin-level iam secret, this way console.redhat.com can create the permissions/roles for cost-management to work
-- (harder way) a secret that has the ability to create s3 buckets, create cost and usage reports, create roles, create policies.
+The source name is just the vanity name (maybe a hostname) the tenant can just be the subscription ID or any other uuid. 
 
-caveat: if you're doing it "the harder way" you will need to check console.redhat.com to see the error that the worker returns permissions-wise.
+After running the ansible-playbook to set up the source for gold images just add an entry for it in the CSV file to be created/destroyed later.
 
 ## Creating the resources
 A Makefile has been provided to make running the script easier (e.g. it checks that all of the environment variables are set correctly).
 
-simply run `make USER=myuser PASSWORD=hunter2 INPUT=accounts.csv create` and the script will create every source under the aws account specified.
+simply run `make USER=myuser PASSWORD=hunter2 INPUT=accounts.csv create` and the script will create an instance to track that source in console.redhat.com
 
 *NOTE*: Do not change the CSV file after running this command! If you want to destroy the resources later we need the names to match in order to find and destroy them.
 

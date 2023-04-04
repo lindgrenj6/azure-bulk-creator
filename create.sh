@@ -6,20 +6,18 @@ source healthcheck.sh
 # do the uploading!
 for i in $(cat $INPUT); do
     # skipping the first line (if copied from example.csv)
-    if [[ $i == "Name,AccessKey,Secret" ]]; then
+    if [[ $i == "Name,Tenant" ]]; then
         continue
     fi
 
     name=$(echo $i | cut -d, -f1)
-    accesskey=$(echo $i | cut -d, -f2)
-    secret=$(echo $i | cut -d, -f3)
+    tenant=$(echo $i | cut -d, -f2)
 
     echo Creating $name
 
     msg=$(cat req.json | \
         sed "s/TNAME/$name/g" | \
-        sed "s/TACCESS/$accesskey/g" | \
-        sed "s/TSECRET/$secret/g"
+        sed "s/TENANT/$tenant/g"
     )
 
     curl --fail -s -XPOST \

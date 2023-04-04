@@ -5,7 +5,7 @@ source healthcheck.sh
 
 for i in $(cat $INPUT); do
     # skipping the first line (if copied from example.csv)
-    if [[ $i == "Name,AccessKey,Secret" ]]; then
+    if [[ $i == "Name,Tenant" ]]; then
         continue
     fi
 
